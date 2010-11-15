@@ -85,11 +85,10 @@
 
 using namespace cell::Gcm; 
 
-#define PAYLOAD_TYPE_PSGROOVE_10	1 // syscall36
-#define PAYLOAD_TYPE_PSGROOVE_11	2 // syscall36 + Peek/Poke
-#define PAYLOAD_TYPE_HERMES			3 // syscall36 + Peek/Poke + syscall8
-#define PAYLOAD_TYPE_PL3			4 // syscall35
-#define PAYLOAD_TYPE_PL3_DEV		5 // syscall35 + Peek/Poke
+#define PAYLOAD_CAPS_SYSCALL36	1
+#define PAYLOAD_CAPS_SYSCALL35	2
+#define PAYLOAD_CAPS_PEEKPOKE	4
+#define PAYLOAD_CAPS_SYSCALL8	8
 
 /* Same as sys/process.h -> SYS_PROCESS_PRIMARY_STACK_SIZE_* */
 #define STACK_1M	0x0000000000000070ULL
@@ -129,51 +128,44 @@ void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackS
     }
 }
 
-int GetPayloadType() {
+unsigned char GetPayloadCaps() {
+    unsigned char ret;
+    ret = 0;
+    
     if(syscall35("/dev_hdd0", "/dev_hdd0") == 0) {
-		pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
-		if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
-			pokeq(0x80000000000505d0ULL, 0x386000014E800020ULL);
-			return PAYLOAD_TYPE_PL3_DEV; // PL3Dev 
-		} else {
-        return PAYLOAD_TYPE_PL3; // PL3 
-		}
+		ret |= PAYLOAD_CAPS_SYSCALL35;
     }
-}
     
     if(sys8_enable(0) > 0) {
-        return PAYLOAD_TYPE_HERMES; // Hermesv3/Hermesv4
+        ret |= PAYLOAD_CAPS_SYSCALL8; // Hermesv3/Hermesv4
     }
     
-    pokeq(0xE92296887C0802A6ULL, 0x80000000000505d0ULL); 
-    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
+    uint64_t oldValue = peekq(0x80000000000505d0UL);
+    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
+    if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
     	pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
-        return PAYLOAD_TYPE_PSGROOVE_11; // PSGroove 1.1 or Hermesv1/Hermesv2  
+        ret |= (PAYLOAD_CAPS_PEEKPOKE | PAYLOAD_CAPS_SYSCALL36); // PSGroove 1.1 or Hermesv1/Hermesv2  
+    } else {
+    	ret |= (PAYLOAD_CAPS_SYSCALL36); // PSGroove 1.0 
     }
-    return PAYLOAD_TYPE_PSGROOVE_10; // PSGroove 1.0 
+    
+    return ret;
 }
 
-bool HasPeekPoke() {
-    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
-    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
-    	pokeq(0x80000000000505d0ULL, 0x386000014E800020ULL);
-    	return true; 
-    } 
-	return false; 
-}
 
 void FixController() {
-	if(GetPayloadType() == 3) 
-			sys8_perm_mode(2); 
-	if(GetPayloadType() == 2||GetPayloadType() == 5)
-			pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
+	if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL8) {
+        sys8_perm_mode(2);
+    } else if(GetPayloadCaps() & PAYLOAD_CAPS_PEEKPOKE) {
+        pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
+    }
 }
 
 void MountBDVD(char *game_path) {
-    if(payloadType() == 4||payloadType() == 5) { 
+    if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL35) { 
         syscall35("/dev_bdvd", game_path); 
         syscall35("/app_home", game_path); 
-	} else { 
+	} else if(GetPayloadCaps() & PATLOAD_CAPS_SYSCALL36) { 
         syscall36(game_path); 
 	} 
 }

@@ -87,7 +87,7 @@ using namespace cell::Gcm;
 
 #define PAYLOAD_TYPE_PSGROOVE_10	1 // syscall36
 #define PAYLOAD_TYPE_PSGROOVE_11	2 // syscall36 + Peek/Poke
-#define PAYLOAD_TYPE_HERMES			3 // syscall36 + Peek/Poke
+#define PAYLOAD_TYPE_HERMES			3 // syscall36 + Peek/Poke + syscall8
 #define PAYLOAD_TYPE_PL3			4 // syscall35
 #define PAYLOAD_TYPE_PL3_DEV		5 // syscall35 + Peek/Poke
 
@@ -131,9 +131,9 @@ void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackS
 
 int GetPayloadType() {
     if(syscall35("/dev_hdd0", "/dev_hdd0") == 0) {
-		pokeq(0xE92296887C0802A6ULL, 0x80000000000505d0ULL); 
-		if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
-			pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
+		pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
+		if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
+			pokeq(0x80000000000505d0ULL, 0x386000014E800020ULL);
 			return PAYLOAD_TYPE_PL3_DEV; // PL3Dev 
 		} else {
         return PAYLOAD_TYPE_PL3; // PL3 
@@ -145,9 +145,8 @@ int GetPayloadType() {
         return PAYLOAD_TYPE_HERMES; // Hermesv3/Hermesv4
     }
     
-    uint64_t oldValue = peekq(0xE92296887C0802A6ULL);
     pokeq(0xE92296887C0802A6ULL, 0x80000000000505d0ULL); 
-    if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
+    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
     	pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
         return PAYLOAD_TYPE_PSGROOVE_11; // PSGroove 1.1 or Hermesv1/Hermesv2  
     }
@@ -155,9 +154,9 @@ int GetPayloadType() {
 }
 
 bool HasPeekPoke() {
-    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
-    if (peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
-        pokeq(0x80000000000505d0ULL, 0x386000014E800020ULL); 
+    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
+    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
+    	pokeq(0x80000000000505d0ULL, 0x386000014E800020ULL);
     	return true; 
     } 
 	return false; 
@@ -166,7 +165,7 @@ bool HasPeekPoke() {
 void FixController() {
 	if(GetPayloadType() == 3) 
 			sys8_perm_mode(2); 
-	if(GetPayloadType() == 2)
+	if(GetPayloadType() == 2||GetPayloadType() == 5)
 			pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
 }
 

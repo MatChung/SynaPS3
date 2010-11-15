@@ -5,8 +5,9 @@
 <html xmlns:svg='http://www.w3.org/2000/svg' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'>
 <head><meta content='application/xhtml+xml;charset=utf-8' http-equiv='Content-type' /><title>SynaPS3</title></head>
 <body>
-<h1 id='SynaPS3'><img src="logo/synaPS3_trans.png></h1>
+<h1 id='SynaPS3'><img src="logo/synaPS3_trans.png"></h1>
 <font face='helvetica'>
+<h3><b>To get started with SynaPS3, all you have to do is add "synaPS3".h to your includes.</b></h3>
 <p>This library has been made by a pair not seeking fame, profit or benefit.</p>
 
 <p>I don&#8217;t want to cause any damage to the video game industry, but it is not reasonable that these consoles (that are expensive) are constructed like a faraday cage and we can not do anything to preserve the health of the lens of our readers, while Sony is burning holes through our pockets when you send a console for repair and they are dedicated to eliminating original features of the console, such as PS3 Other OS and Linux, relying on what they think best for your business and not caring for the feelings of their users or their acquired rights as users and owners of their consoles.</p>
@@ -14,6 +15,7 @@
 <p>The videogame industry only wants control, oligopoly, money, pursuit of anything that does not benefit their interests and if it is possible, force legal changes using their influence and power while we&#8217;re just anonymous people having to endure all the crap on hardware that is passed through a computer</p>
 
 <p>It is &#8216;illegal&#8217; to build things with the <i>SONY SDK</i> unlicensed, but this is only source code.</p>
+
 
 <h2 id='features'>FEATURES</h2>
 <p>SynaPS3 has the following features:</p>
@@ -78,7 +80,7 @@
 <b>void RedirectGameData(const char *data_path)</b>
 <p>Mounts the argument given to /dev_hdd0/game. Only supported by PL3 and PL3dev payloads.</p>
 <pre>
-<i>char save_path[] = '/dev_usb003/PS3/game';<br>RedirectGameData(save_path);</i></pre>
+<i>char save_path[] = '/dev_usb003/PS3/game';<br>RedirectGameData(data_path);</i></pre>
 </li>
 
 <li>

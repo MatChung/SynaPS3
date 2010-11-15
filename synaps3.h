@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////
-///					SynaPS3lib 				///
-///	          by n4ru && methionine_		///
-/// 	Compatible with Sony PS3 SDK 3.41	///
-//////////////////////////////////////////////////////////////////////////////////////////////
+///					SynaPS3lib 				
+///	          by n4ru && methionine_		
+/// 	Compatible with Sony PS3 SDK 3.41	
+///////////////////////////////////////////////
 ///
 /// void Mount(const char *old_path, const char *new_path)
 /// - Mounts second argument to first.
@@ -48,7 +48,7 @@
 ///
 /// void UnloadIOFSModules()
 /// - Unloads the IO and FS modules
-//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////
 #ifndef __SYNAPS3_H
 #define __SYNAPS3_H
 
@@ -116,7 +116,7 @@ uint64_t peekq(uint64_t addr) {
 	return out; 
 } 
 
-bool IsBluRayGame() {
+bool IsBlurayGame() {
     struct stat stFile;
     return (stat("/dev_bdvd/PS3_GAME/PARAM.SFO", &stFile) == 0);
 } 
@@ -131,8 +131,15 @@ void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackS
 
 int GetPayloadType() {
     if(syscall35("/dev_hdd0", "/dev_hdd0") == 0) {
+		pokeq(0xE92296887C0802A6ULL, 0x80000000000505d0ULL); 
+		if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
+			pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
+			return PAYLOAD_TYPE_PL3_DEV; // PL3Dev 
+		} else {
         return PAYLOAD_TYPE_PL3; // PL3 
+		}
     }
+}
     
     if(sys8_enable(0) > 0) {
         return PAYLOAD_TYPE_HERMES; // Hermesv3/Hermesv4

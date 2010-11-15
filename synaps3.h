@@ -86,10 +86,18 @@
 using namespace cell::Gcm; 
 
 #define PAYLOAD_CAPS_SYSCALL36	1
-#define PAYLOAD_CAPS_SYSCALL35	2
-#define PAYLOAD_CAPS_PEEKPOKE	4
-#define PAYLOAD_CAPS_SYSCALL8	8
-
+#define PAYLOAD_CAPS_PEEKPOKE	2
+#define PAYLOAD_CAPS_SYSCALL8	4
+#define PAYLOAD_CAPS_SYSCALL35	8
+/*
+PSGroove 						1
+PSGroove1.1/Hermesv1/Hermesv2	3
+Hermesv3/Hermesv4				7
+Old PL3							8  (9 with the hacked syscall36)
+New PL3							9
+Old PL3Dev						10 (11 with the hacked syscall36)
+New PL3Dev						11
+*/
 /* Same as sys/process.h -> SYS_PROCESS_PRIMARY_STACK_SIZE_* */
 #define STACK_1M	0x0000000000000070ULL
 #define STACK_512K	0x0000000000000060ULL
@@ -99,11 +107,19 @@ using namespace cell::Gcm;
 #define STACK_64K	0x0000000000000020ULL
 #define STACK_32K	0x0000000000000010ULL
 
-#define syscall36(x)		system_call_1(36, (uint64_t) x);
 #define syscall35(x,y)		system_call_1(35, (uint32_t) x, (uint32_t) y);  
-#define MountPS2Disc(x)		system_call_2(35, "/dev_ps2disc", ps2_path);
-#define MountPS1Disc(x)		system_call_2(35, "/dev_ps1disc", ps1_path);
-#define RedirectGameData(x)	system_call_2(35, "/dev_hdd0/game", data_path);
+#define Mount(x,y)			system_call_1(35, (uint32_t) x, (uint32_t) y); 
+#define MountPS2Disc(x)		system_call_2(35, "/dev_ps2disc", (uint32_t) x);
+#define MountPS1Disc(x)		system_call_2(35, "/dev_ps1disc", (uint32_t) x);
+#define RedirectGameData(x)	system_call_2(35, "/dev_hdd0/game", (uint32_t) x);
+
+void syscall36(uint64_t game_path) {
+	if((system_call_1(36, "/dev_bdvd")) == 0) {
+		system_call_1(36, game_path);
+	} else {
+		system_call_2(35, "/dev_bdvd", game_path);
+	}
+}
 
 void pokeq(uint64_t addr, uint64_t val) {
     system_call_2(7, addr, val); 
@@ -135,20 +151,21 @@ unsigned char GetPayloadCaps() {
     if(syscall35("/dev_hdd0", "/dev_hdd0") == 0) {
 		ret |= PAYLOAD_CAPS_SYSCALL35;
     }
+	
+    if(syscall36("/dev_bdvd") == 0) {
+		ret |= PAYLOAD_CAPS_SYSCALL36;
+    }
     
     if(sys8_enable(0) > 0) {
-        ret |= PAYLOAD_CAPS_SYSCALL8; // Hermesv3/Hermesv4
+        ret |= PAYLOAD_CAPS_SYSCALL8;
     }
     
     uint64_t oldValue = peekq(0x80000000000505d0UL);
     pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
     if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
     	pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
-        ret |= (PAYLOAD_CAPS_PEEKPOKE | PAYLOAD_CAPS_SYSCALL36); // PSGroove 1.1 or Hermesv1/Hermesv2  
-    } else {
-    	ret |= (PAYLOAD_CAPS_SYSCALL36); // PSGroove 1.0 
+        ret |= (PAYLOAD_CAPS_PEEKPOKE);
     }
-    
     return ret;
 }
 
@@ -165,7 +182,7 @@ void MountBDVD(char *game_path) {
     if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL35) { 
         syscall35("/dev_bdvd", game_path); 
         syscall35("/app_home", game_path); 
-	} else if(GetPayloadCaps() & PATLOAD_CAPS_SYSCALL36) { 
+	} else if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL36) { 
         syscall36(game_path); 
 	} 
 }

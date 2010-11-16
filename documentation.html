@@ -7,7 +7,7 @@
 <body>
 <h1 id='SynaPS3'><img src="logo/synaPS3_trans.png"></h1>
 <font face='helvetica'>
-<h3><b>To get started with SynaPS3, all you have to do is add "synaPS3".h to your includes.</b></h3>
+<h3><b>To get started with SynaPS3, all you have to do is add "synaPS3.h" to your includes.</b></h3>
 <p>This library has been made by a pair not seeking fame, profit or benefit.</p>
 
 <p>I don&#8217;t want to cause any damage to the video game industry, but it is not reasonable that these consoles (that are expensive) are constructed like a faraday cage and we can not do anything to preserve the health of the lens of our readers, while Sony is burning holes through our pockets when you send a console for repair and they are dedicated to eliminating original features of the console, such as PS3 Other OS and Linux, relying on what they think best for your business and not caring for the feelings of their users or their acquired rights as users and owners of their consoles.</p>
@@ -26,7 +26,7 @@
 </li>
 
 <li>
-<p>Universal Payload support, even though some deprecated payloads may not be able to carry out all of SynaPS3's intended features.</p>
+<p>Universal Payload support, even though some deprecated payloads may not be able to carry out all of SynaPS3's intended features.<br><i>The most supported payloads are Hermes v3, Hermes v4, and PL3Dev.<br>All of SynaPS3's current features can only be fully implemented on these payloads .</i></p>
 </li>
 
 <li>
@@ -38,7 +38,11 @@
 </li>
 
 <li>
-<p>Support for Peek/Poke</p>
+<p>Universal syscall36.</p>
+</li>
+
+<li>
+<p>syscall35 for Hermes v3 & Hermes v4 payloads.</p>
 </li>
 </ul>
 
@@ -49,98 +53,91 @@
 <ul>
 
 <li>
-<b>void Mount(const char *old_path, const char *new_path)</b>
-<p>Mounts the second argument given to the first argument given. Only supported by PL3 and PL3dev payloads.</p>
+<b>uint32_t syscall35(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev
+<p>Mounts the second argument given to the first argument given.</p>
 <pre>
 <i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>
 </li>
 
 <li>
-<b>void MountBDVD(char *path) </b>
-<p>Mounts the argument given to the Bluray drive and /app_home. Supported by all payloads.</p>
+<b>void syscall36(char *game_path)</b><br><u>Supported payloads:</u> All
+<p>Mounts the argument given to the Bluray drive and /app_home.</p>
 <pre>
 <i>char game_path[] = '/dev_hdd0/GAMES/BLUS00000';<br>Mount(game_path);</i></pre>
 </li>
 
 <li>
-<b>void MountPS2Disc(const char *ps2_path)</b>
-<p>Mounts the argument given to /dev_ps2disc. Can not be used to launch PS2 games (yet). Only supported by PL3 and PL3dev payloads.</p>
-<pre>
-<i>char game_path[] = '/dev_hdd0/PS2GAMES/BLUS00001';<br>MountPS2Disc(game_path);</i></pre>
-</li>
-
-<li>
-<b>void MountPS1Disc(const char *ps2_path)</b>
-<p>Mounts the argument given to /dev_ps1disc. Can not be used to launch PS1 games (yet). Only supported by PL3 and PL3dev payloads.</p>
-<pre>
-<i>char game_path[] = '/dev_hdd0/PS1GAMES/BLUS00002';<br>MountPS1Disc(game_path);</i></pre>
-</li>
-
-<li>
-<b>void RedirectGameData(const char *data_path)</b>
-<p>Mounts the argument given to /dev_hdd0/game. Only supported by PL3 and PL3dev payloads.</p>
-<pre>
-<i>char save_path[] = '/dev_usb003/PS3/game';<br>RedirectGameData(data_path);</i></pre>
-</li>
-
-<li>
-<b>void BootGame(char eboot_path[256], bool highPriority, const char *stack)</b>
-<p>Boots the first argument, with priority given by second (true = 1001, false = 3071), with stack size given by third argument.</p>
-<pre>
-<i>char eboot_path[256]; <br>sprintf(eboot_path, '%s/PS3_GAME/USRDIR/EBOOT.BIN', game_path);<br>BootGame(eboot_path, 1, STACK_1M);</i></pre>
-</li>
-
-<li>
-<b>bool IsBlurayGame()</b>
-<p>Returns true is a valid PS3 game is inserted.</p>
-<pre>
-<i>if(!IsBlurayGame())<br>sys_process_exit(1);</i></pre>
-</li>
-
-<li>
-<b>int GetPayloadType()</b>
-<p>Returns the payload type. 5->PL3dev	4-> PL3 	3-> Hermesv3/v4 	2-> Hermesv1/v2 or PSGroove 1.1		1-> PSGroove 1.0</p>
-<pre>
-<i>if(GetPayloadType() == 5||GetPayloadType() == 4)<br>Mount('/dev_flash', '/dev_hdd0/CFW/dev_flash');</i></pre>
-</li>
-
-<li>
-<b>bool HasPeekPoke()</b>
-<p>Returns true is the payload has Peek and Poke.</p>
-<pre>
-<i>if(HasPeekPoke())<br>pokeq(0xE92296887C0802A6ULL, 0x80000000000505d0ULL);</i></pre>
-</li>
-
-<li>
-<b>void FixController()</b>
-<p>If the payload has Peek/Poke, activates the controller fix.</p>
-<pre>
-<i>FixController();</i></pre>
-</li>
-
-<li>
-<b>void pokeq(uint64_t addr, uint64_t val)</b>
+<b>void pokeq(uint64_t addr, uint64_t val)</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3, PL3Dev
 <p>Modifies first argument address in memory to second argument's value.</p>
 <pre>
-<i>pokeq(0xE92296887C0802A6ULL, 0x80000000000505d0ULL);</i></pre>
+<i>pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);</i></pre>
 </li>
 
 <li>
-<b>uint64_t peekq(uint64_t addr) </b>
+<b>uint64_t peekq(uint64_t addr)</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3, PL3Dev
 <p>Returns the value at first argument address.</p>
 <pre>
 <i>peekq(0xE92296887C0802A6ULL);</i></pre>
 </li>
 
 <li>
-<b>void LoadIOFSModules()</b>
+<b>unsigned char GetPayloadCaps()</b><br><u>Supported payloads:</u> All
+<p>Returns a bitmask with payload capabilities. <br>They are: PAYLOAD_CAPS_SYSCALL36, PAYLOAD_CAPS_SYSCALL8, PAYLOAD_CAPS_PEEKPOKE, PAYLOAD_CAPS_SYSCALL35.<br>PAYLOAD_CAPS_SYSCALL36 is automatically returned by all payloads.</p>
+<pre>
+<i>if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL8) {<br>        sys8_perm_mode(2);</i></pre>
+</li>
+
+<li>
+<b>int ReadFirmwareVersion(char * FirmwareVersion)</b><br><u>Supported payloads:</u> All
+<p>Writes firmware version in the form of '00.0000' to FirmwareVersion.</p>
+<pre>
+<i>ReadFirmwareVersion(FirmwareVersion)<br>if (strcmp(FirmwareVersion, "03.0100")==0){<br>	pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);<br>	pokeq(0x80000000000547fcULL, 0x6000000038de0007ULL);<br>	pokeq(0x800000000005487cULL, 0x480000a02f840004ULL);<br>}</i></pre>
+</li>
+
+<li>
+<b>void Firmware342Fix()</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3Dev
+<p>Returns the value at first argument address.</p>
+<pre>
+<i>Firmware342Fix();</i></pre>
+</li>
+
+<li>
+<b>bool IsBlurayGame()</b><br><u>Supported payloads:</u> All
+<p>Returns true is a valid PS3 game is inserted.</p>
+<pre>
+<i>if(!IsBlurayGame())<br>	sys_process_exit(1);</i></pre>
+</li>
+
+<li>
+<b>bool IsPSXGame()</b><br><u>Supported payloads:</u> All
+<p>Returns true is a valid PSX game is inserted.</p>
+<pre>
+<i>if(!IsPSXGame())<br>	sys_process_exit(1);</i></pre>
+</li>
+
+<li>
+<b>void BootGame(char eboot_path[256], bool highPriority, const char *stack)</b><br><u>Supported payloads:</u> All
+<p>Boots the first argument, with priority given by second (true = 1001, false = 3071), with stack size given by third argument.</p>
+<pre>
+<i>char eboot_path[256]; <br>sprintf(eboot_path, '%s/PS3_GAME/USRDIR/EBOOT.BIN', game_path);<br>BootGame(eboot_path, 1, STACK_1M);</i></pre>
+</li>
+
+<li>
+<b>void FixController()</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3Dev
+<p>Activates the controller fix.</p>
+<pre>
+<i>FixController();</i></pre>
+</li>
+
+<li>
+<b>void LoadIOFSModules()</b><br><u>Supported payloads:</u> All
 <p>Loads the IO and FS modules</p>
 <pre>
 <i>LoadIOFSModules();</i></pre>
 </li>
 
 <li>
-<b>void UnloadIOFSModules()</b>
+<b>void UnloadIOFSModules()</b><br><u>Supported payloads:</u> All
 <p>Unloads the IO and FS modules</p>
 <pre>
 <i>UnloadIOFSModules();</i></pre>

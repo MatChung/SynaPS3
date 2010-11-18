@@ -53,14 +53,14 @@
 <ul>
 
 <li>
-<b>uint32_t syscall35(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev
+<b>uint32_t syscall35(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev<br><font color="red"><b>Please use Mount instead of syscall35, they do the same thing. This is only included to increase compatability with existing homebrew.</b></font><br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
 <p>Mounts the second argument given to the first argument given.</p>
 <pre>
 <i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>
 </li>
 
 <li>
-<b>void syscall36(char *game_path)</b><br><u>Supported payloads:</u> All
+<b>void syscall36(char *game_path)</b><br><u>Supported payloads:</u> All<br><font color="red"><b>Please use MountBDVD instead of syscall36, they do the same thing. This is only included to increase compatability with existing homebrew.</b></font>
 <p>Mounts the argument given to the Bluray drive and /app_home.</p>
 <pre>
 <i>char game_path[] = '/dev_hdd0/GAMES/BLUS00000';<br>Mount(game_path);</i></pre>
@@ -123,7 +123,7 @@
 </li>
 
 <li>
-<b>uint32_t Mount(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev
+<b>uint32_t Mount(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev<br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
 <p>Mounts the second argument given to the first argument given.</p>
 <pre>
 <i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>

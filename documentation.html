@@ -81,13 +81,6 @@
 </li>
 
 <li>
-<b>unsigned char GetPayloadCaps()</b><br><u>Supported payloads:</u> All
-<p>Returns a bitmask with payload capabilities. <br>They are: PAYLOAD_CAPS_SYSCALL36, PAYLOAD_CAPS_SYSCALL8, PAYLOAD_CAPS_PEEKPOKE, PAYLOAD_CAPS_SYSCALL35.<br>PAYLOAD_CAPS_SYSCALL36 is automatically returned by all payloads.</p>
-<pre>
-<i>if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL8) {<br>        sys8_perm_mode(2);</i></pre>
-</li>
-
-<li>
 <b>int ReadFirmwareVersion(char * FirmwareVersion)</b><br><u>Supported payloads:</u> All
 <p>Writes firmware version in the form of '00.0000' to FirmwareVersion.</p>
 <pre>
@@ -127,6 +120,20 @@
 <p>Activates the controller fix.</p>
 <pre>
 <i>FixController();</i></pre>
+</li>
+
+<li>
+<b>uint32_t Mount(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev
+<p>Mounts the second argument given to the first argument given.</p>
+<pre>
+<i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>
+</li>
+
+<li>
+<b>void MountBDVD(char *game_path)</b><br><u>Supported payloads:</u> All
+<p>Mounts the argument given to the Bluray drive and /app_home.</p>
+<pre>
+<i>char game_path[] = '/dev_hdd0/GAMES/BLUS00000';<br>Mount(game_path);</i></pre>
 </li>
 
 <li>

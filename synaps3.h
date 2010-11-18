@@ -62,9 +62,33 @@ PL3Dev							syscall36, Peek & Poke, syscall35, Controller Fix
 
 static char FirmwareVersion[10]="00.0000";
 
-uint32_t syscall35(const char *old_path, const char *new_path)
-{
-	if(system_call_2(35, "/dev_bdvd", "dev_bdvd") != 0) {
+void Exit() {
+	sys_process_exit(1); 
+}
+
+uint32_t mnt(const char *old_path, const char *new_path) {
+   system_call_2(35, (uint32_t) old_path, (uint32_t) new_path);
+   return_to_user_prog(uint32_t);
+} 
+
+int ReadFirmwareVersion(char * FirmwareVersion) { // ReadFirmwareVersion(FirmwareVersion); returns FW (03.4100)
+  FILE *fp = fopen ("/dev_flash/vsh/etc/version.txt", "r" );  
+  if ( fp != NULL )
+  {	
+    char line [ 16 ];
+    if (fgets ( line, sizeof line, fp ) != NULL) {
+      sprintf(FirmwareVersion, "%s", strstr(line, "release:")+8);    
+      return 0;
+    } else {
+      return -2;
+    }
+  }else{
+    return -1;
+  }
+}
+
+uint32_t syscall35(const char *old_path, const char *new_path) {
+	if(mnt("/dev_hdd0", "/dev_hdd0") == 0x80010003) {
 		if(sys8_enable(0) > 0) {
 			// syscall8 -> syscall35 conversion starts here
 			typedef struct
@@ -88,19 +112,25 @@ uint32_t syscall35(const char *old_path, const char *new_path)
 			sys8_memcpy(dest_table_addr, (uint64_t) &open_table, sizeof(path_open_table));
 			sys8_path_table( dest_table_addr);
 			// syscall8 -> syscall35 conversion ends here
+			return 0x46414b45; // "FAKE"
 		}
 	} else {
+	if(mnt("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
 		system_call_2(35, (uint32_t) old_path, (uint32_t) new_path);
 		return_to_user_prog(uint32_t);
+		return 0;
+		}
 	}
 }
 
-void syscall36(char *game_path) {
-	if(system_call_2(35, "/dev_bdvd", game_path) != 0) {
-		system_call_1(36, (uint32_t) path);
+uint32_t syscall36(char *game_path) {
+	if(mnt("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
+		mnt("/dev_bdvd", game_path);
+		mnt("/app_home", game_path);
+		return 0x46414b45; // "FAKE"
 	} else {
-		system_call_2(35, "/dev_bdvd", game_path);
-		system_call_2(35, "/app_home", game_path);
+		system_call_1(36, (uint32_t) game_path);
+		return 0;
 	}
 }
 
@@ -113,49 +143,39 @@ uint64_t peekq(uint64_t addr) {
 	system_call_2(6,addr,out); 
 	return out; 
 } 
-
-unsigned char GetPayloadCaps() {
-    unsigned char ret;
-    ret = 0;
-
-    if(syscall35("/dev_hdd0", "/dev_hdd0") == 0) {
-		ret |= PAYLOAD_CAPS_SYSCALL35;
+/*
+int GetPayloadCaps() {
+	int Has35 = 0;
+	int Has8 = 0;
+	int HasPP = 0;
+	int Has36 = 0;
+    if(mnt("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
+		// ret |= PAYLOAD_CAPS_SYSCALL35;
+		Has35 = 1;
     }
-
     if(sys8_enable(0) > 0) {
-        ret |= PAYLOAD_CAPS_SYSCALL8;
+        //ret |= PAYLOAD_CAPS_SYSCALL8;
+		Has8 = 1;
     }
-
-    uint64_t oldValue = peekq(0x80000000000505d0UL);
+    uint64_t oldValue = peekq(0x80000000000505d0ULL);
     pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
     if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
     	pokeq(0x80000000000505d0ULL, oldValue);
-        ret |= (PAYLOAD_CAPS_PEEKPOKE);
+        //ret |= (PAYLOAD_CAPS_PEEKPOKE);
+		HasPP = 1;
     }
-	ret |= PAYLOAD_CAPS_SYSCALL36;
-    return ret;
+	// ret |= PAYLOAD_CAPS_SYSCALL36;
+	Has36 = 1;
+    return 0;
 }
-
-int ReadFirmwareVersion(char * FirmwareVersion) // ReadFirmwareVersion(FirmwareVersion); returns FW (03.4100)
-{
-  FILE *fp = fopen ("/dev_flash/vsh/etc/version.txt", "r" );  
-  if ( fp != NULL )
-  {	
-    char line [ 16 ];
-    if (fgets ( line, sizeof line, fp ) != NULL) {
-      sprintf(FirmwareVersion, "%s", strstr(line, "release:")+8);    
-      return 0;
-    } else {
-      return -2;
-    }
-  }else{
-    return -1;
-  }
-}
+*/
 
 void Firmware342Fix()
 {
-	if(GetPayloadCaps() & PAYLOAD_CAPS_PEEKPOKE) {
+	uint64_t oldValue = peekq(0x80000000000505d0ULL);
+    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
+    if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
+    	pokeq(0x80000000000505d0ULL, oldValue);
 		if (strcmp(FirmwareVersion, "03.0100")==0){
 			pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);
 			pokeq(0x80000000000547fcULL, 0x6000000038de0007ULL);
@@ -171,7 +191,7 @@ void Firmware342Fix()
 			pokeq(0x8000000000057398ULL, 0x6000000038de0007ULL);  
 			pokeq(0x8000000000057408ULL, 0x480000a02f840004ULL);
 		}	
-   }
+	}
 }
 
 bool IsBlurayGame() {
@@ -193,23 +213,32 @@ void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackS
 }
 
 void FixController() {
-	if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL8) {
+    if(sys8_enable(0) > 0) {
         sys8_perm_mode(2);
-    } else if(GetPayloadCaps() & PAYLOAD_CAPS_PEEKPOKE) {
+    } else {
+	uint64_t oldValue = peekq(0x80000000000505d0ULL);
+    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
+    if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
+    	pokeq(0x80000000000505d0ULL, oldValue);
 		//if (strcmp(FirmwareVersion, "03.4100")==0){
 			pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
 		//}	
+		}
     }
 }
 
 void MountBDVD(char *game_path) {
-    if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL35) { 
+	if(mnt("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
         syscall35("/dev_bdvd", game_path); 
         syscall35("/app_home", game_path); 
 	}
-    if(GetPayloadCaps() & PAYLOAD_CAPS_SYSCALL36) { 
+    if(mnt("/dev_hdd0", "/dev_hdd0") == 0x80010003) {
         syscall36(game_path); 
 	} 
+}
+
+uint32_t Mount(char *old_path, char *new_path) {
+	syscall35(old_path, new_path);
 }
 
 void LoadIOFSModules() {

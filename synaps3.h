@@ -82,7 +82,7 @@ int ReadFirmwareVersion(char * FirmwareVersion) { // ReadFirmwareVersion(Firmwar
     } else {
       return -2;
     }
-  }else{
+  } else {
     return -1;
   }
 }
@@ -140,32 +140,24 @@ void pokeq(uint64_t addr, uint64_t val) {
 
 uint64_t peekq(uint64_t addr) { 
 	uint64_t out; 
-	system_call_2(6,addr,out); 
+	system_call_2(6, addr, out); 
 	return out; 
 } 
 /*
 int GetPayloadCaps() {
-	int Has35 = 0;
-	int Has8 = 0;
-	int HasPP = 0;
-	int Has36 = 0;
     if(mnt("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
 		// ret |= PAYLOAD_CAPS_SYSCALL35;
-		Has35 = 1;
     }
     if(sys8_enable(0) > 0) {
         //ret |= PAYLOAD_CAPS_SYSCALL8;
-		Has8 = 1;
     }
     uint64_t oldValue = peekq(0x80000000000505d0ULL);
     pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
     if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
     	pokeq(0x80000000000505d0ULL, oldValue);
         //ret |= (PAYLOAD_CAPS_PEEKPOKE);
-		HasPP = 1;
     }
 	// ret |= PAYLOAD_CAPS_SYSCALL36;
-	Has36 = 1;
     return 0;
 }
 */
@@ -174,7 +166,7 @@ void Firmware342Fix()
 {
 	uint64_t oldValue = peekq(0x80000000000505d0ULL);
     pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
-    if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
+    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL); { 
     	pokeq(0x80000000000505d0ULL, oldValue);
 		if (strcmp(FirmwareVersion, "03.0100")==0){
 			pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);
@@ -218,7 +210,7 @@ void FixController() {
     } else {
 	uint64_t oldValue = peekq(0x80000000000505d0ULL);
     pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
-    if(peekq(0xE92296887C0802A6ULL) == 0xE92296887C0802A6ULL) { 
+    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
     	pokeq(0x80000000000505d0ULL, oldValue);
 		//if (strcmp(FirmwareVersion, "03.4100")==0){
 			pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 

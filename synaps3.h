@@ -164,25 +164,25 @@ int GetPayloadCaps() {
 
 void Firmware342Fix()
 {
-	uint64_t oldValue = peekq(0x80000000000505d0ULL);
-    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
-    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL); { 
-    	pokeq(0x80000000000505d0ULL, oldValue);
-		if (strcmp(FirmwareVersion, "03.0100")==0){
-			pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);
-			pokeq(0x80000000000547fcULL, 0x6000000038de0007ULL);
-			pokeq(0x800000000005487cULL, 0x480000a02f840004ULL);
+	//uint64_t oldValue = peekq(0x8000000000000000ULL);
+	if((uint64_t oldValue = peekq(0x8000000000000000ULL)) != 0x80010003) {
+		if(pokeq(0x8000000000000000ULL, oldValue) != 0x80010003) { 
+			if (strcmp(FirmwareVersion, "03.0100")==0){
+				pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);
+				pokeq(0x80000000000547fcULL, 0x6000000038de0007ULL);
+				pokeq(0x800000000005487cULL, 0x480000a02f840004ULL);
+			}
+			if (strcmp(FirmwareVersion, "03.1500")==0){
+				pokeq(0x800000000004ED5CULL, 0x4BFFFFD440990024ULL);          
+				pokeq(0x8000000000056D84ULL, 0x6000000038de0007ULL);   
+				pokeq(0x8000000000056df4ULL, 0x480000a02f840004ULL);
+			}
+			if (strcmp(FirmwareVersion, "03.4100")==0){
+				pokeq(0x800000000004F290ULL, 0x4BFFFFD440990024ULL);
+				pokeq(0x8000000000057398ULL, 0x6000000038de0007ULL);  
+				pokeq(0x8000000000057408ULL, 0x480000a02f840004ULL);
+			}	
 		}
-		if (strcmp(FirmwareVersion, "03.1500")==0){
-			pokeq(0x800000000004ED5CULL, 0x4BFFFFD440990024ULL);          
-			pokeq(0x8000000000056D84ULL, 0x6000000038de0007ULL);   
-			pokeq(0x8000000000056df4ULL, 0x480000a02f840004ULL);
-		}
-		if (strcmp(FirmwareVersion, "03.4100")==0){
-			pokeq(0x800000000004F290ULL, 0x4BFFFFD440990024ULL);
-			pokeq(0x8000000000057398ULL, 0x6000000038de0007ULL);  
-			pokeq(0x8000000000057408ULL, 0x480000a02f840004ULL);
-		}	
 	}
 }
 
@@ -208,15 +208,14 @@ void FixController() {
     if(sys8_enable(0) > 0) {
         sys8_perm_mode(2);
     } else {
-	uint64_t oldValue = peekq(0x80000000000505d0ULL);
-    pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
-    if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) { 
-    	pokeq(0x80000000000505d0ULL, oldValue);
-		//if (strcmp(FirmwareVersion, "03.4100")==0){
-			pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
-		//}	
+		if((uint64_t oldValue = peekq(0x8000000000000000ULL)) != 0x80010003) {
+			if(pokeq(0x8000000000000000ULL, oldValue) != 0x80010003) { 
+				if (strcmp(FirmwareVersion, "03.4100")==0){
+					pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL); 
+				}	
+			}
 		}
-    }
+	}
 }
 
 void MountBDVD(char *game_path) {

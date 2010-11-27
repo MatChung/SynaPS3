@@ -1,0 +1,8 @@
+Welcome to SynaPS3. 
+To start using SynaPS3 immediately, just include "synaps3.h".
+
+Please only use functions described in documentation.html. All others are buggy, for specific testing, or don't work at all.
+Functions that are getting ready to be included in SynaPS3, but are not fully developed and tested, will be in SynaPS3dev, found in "synaps3_dev.h". Use with caution.
+
+Remember that SynaPS3 is still in the early stages, additions should follow soon that will make SynaPS3 a major help to the scene.
+If you think you have a contribution that we could add, let us know by emailing geokoder@gmail.com.

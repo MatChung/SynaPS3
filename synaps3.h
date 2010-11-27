@@ -173,11 +173,6 @@ bool IsBlurayGame() {
     return (stat("/dev_bdvd", &stPath) == 0);
 } 
 
-bool IsPSXGame() {
-    struct stat stPath;
-    return ((stat("/dev_ps2disc", &stPath) == 0)||(stat("/dev_ps1disc", &stPath) == 0));
-} 
-
 void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackSize) {
     if (highPriority) {
         sys_game_process_exitspawn2(eboot_path, NULL, NULL, NULL, 0, 1001, stackSize);

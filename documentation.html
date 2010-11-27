@@ -53,14 +53,14 @@
 <ul>
 
 <li>
-<b>uint32_t syscall35(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev<br><font color="red"><b>Please use Mount instead of syscall35, they do the same thing. This is only included to increase compatability with existing homebrew.</b></font><br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
+<b>uint32_t syscall35(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u>PL3, PL3Dev<br><font color="red"><b>Please use Mount instead of syscall35. This is only included to increase compatability with existing homebrew.</b></font><br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
 <p>Mounts the second argument given to the first argument given. <i>This will return FAKE if ran on Hermes v3/Hermes v4.</i></p>
 <pre>
 <i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>
 </li>
 
 <li>
-<b>void syscall36(char *game_path)</b><br><u>Supported payloads:</u> All<br><font color="red"><b>Please use MountBDVD instead of syscall36, they do the same thing. This is only included to increase compatability with existing homebrew.</b></font>
+<b>void syscall36(char *game_path)</b><br><u>Supported payloads:</u> All<br><font color="red"><b>Please use MountBDVD instead of syscall36. This is only included to increase compatability with existing homebrew.</b></font>
 <p>Mounts the argument given to the Bluray drive and /app_home. <i>This will return FAKE if ran on PL3 or PL3Dev.</i></p>
 <pre>
 <i>char game_path[] = '/dev_hdd0/GAMES/BLUS00000';<br>Mount(game_path);</i></pre>
@@ -102,13 +102,6 @@
 </li>
 
 <li>
-<b>bool IsPSXGame()</b><br><u>Supported payloads:</u> All
-<p>Returns true is a valid PSX game is inserted.</p>
-<pre>
-<i>if(!IsPSXGame())<br>	sys_process_exit(1);</i></pre>
-</li>
-
-<li>
 <b>void BootGame(char eboot_path[256], bool highPriority, const char *stack)</b><br><u>Supported payloads:</u> All
 <p>Boots the first argument, with priority given by second (true = 1001, false = 3071), with stack size given by third argument.</p>
 <pre>
@@ -117,13 +110,13 @@
 
 <li>
 <b>void FixController()</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3Dev<br><font color="orange"><b>NOTE: PSGroove1.1/Hermesv1/Hermesv2 and PL3Dev Payloads only support this on 3.41.</b></font>
-<p>Activates the controller fix.</p>
+<p>Activates the controller fix. Limited to 3.41. Remember that PL3/PL3Dev autopatches this.</p>
 <pre>
 <i>FixController();</i></pre>
 </li>
 
 <li>
-<b>uint32_t Mount(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> Hermes v3/Hermes v4, PL3, PL3Dev<br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
+<b>uint32_t Mount(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> PL3, PL3Dev<br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
 <p>Mounts the second argument given to the first argument given. <i>This will return FAKE if ran on Hermes v3/Hermes v4.</i></p>
 <pre>
 <i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>

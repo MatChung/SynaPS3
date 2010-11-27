@@ -3,8 +3,8 @@
 ///	          by n4ru && methionine_		///
 /// 	Compatible with Sony PS3 SDK 3.41	///
 ///////////////////////////////////////////////
-#ifndef __SYNAPS3_H
-#define __SYNAPS3_H
+#ifndef __SYNAPS3DEV_H
+#define __SYNAPS3DEV_H
 
 #include <sys/spu_initialize.h> 
 #include <sys/ppu_thread.h> 
@@ -91,4 +91,4 @@ uint32_t syscall35hermes(const char *old_path, const char *new_path) {
 	}
 }
 
-#endif /* __SYNAPS3_H */
+#endif /* __SYNAPS3DEV_H */

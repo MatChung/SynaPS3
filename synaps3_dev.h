@@ -38,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 #include "syscall8.h" 
+#include "synaps3.h"
 
 #define PAYLOAD_CAPS_SYSCALL36	1
 #define PAYLOAD_CAPS_SYSCALL8	2
@@ -52,10 +53,19 @@ unsigned char GetPayloadCaps() {
     if(sys8_enable(0) > 0) {
         ret |= PAYLOAD_CAPS_SYSCALL8;
     }
-	uint64_t oldValue = peekq(0x80000000000505d0ULL);
-    if(peekq(0x80000000000505d0ULL) == oldValue) { 
-        ret |= PAYLOAD_CAPS_PEEKPOKE;
-    }
+	if (strcmp(FirmwareVersion, "03.4100")==0){
+		uint64_t oldValue = peekq(0x80000000000505d0ULL);
+		pokeq(0x80000000000505d0ULL, 0xE92296887C0802A6ULL);
+		if(peekq(0x80000000000505d0ULL) == 0xE92296887C0802A6ULL) {
+			pokeq(0x80000000000505d0ULL, oldValue);
+			ret |= PAYLOAD_CAPS_PEEKPOKE;
+		}
+	} else {
+		uint64_t oldValue = peekq(0x80000000000505d0ULL);
+		if(peekq(0x80000000000505d0ULL) == oldValue) { 
+			ret |= PAYLOAD_CAPS_PEEKPOKE;
+		}
+	}
 	if(syscall36("/dev_bdvd") == 0) {
 		ret |= PAYLOAD_CAPS_SYSCALL36;
 	}
@@ -88,6 +98,15 @@ uint32_t syscall35hermes(const char *old_path, const char *new_path) {
 		sys8_path_table( dest_table_addr);
 		// syscall8 -> syscall35 conversion ends here
 		return 0;
+	}
+}
+
+uint32_t MountDev(char *old_path_dev, char *new_path_dev) {
+	if(GetPayloadCaps() && PAYLOAD_CAPS_SYSCALL36) {
+		syscall35hermes(old_path_dev, new_path_dev);
+	}
+	if(GetPayloadCaps() && PAYLOAD_CAPS_SYSCALL35) {
+		Mount(old_path_dev, new_path_dev);
 	}
 }
 

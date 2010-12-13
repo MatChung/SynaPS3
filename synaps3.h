@@ -73,7 +73,6 @@ uint32_t mnt(const char *old_path, const char *new_path) {
 
 uint32_t syscall35(const char *old_path, const char *new_path) {
 	if(mnt("/dev_hdd0", "/dev_hdd0") == 0x80010003) {
-	/*
 		if(sys8_enable(0) > 0) {
 			// This needs to be fixed asap to allow more than one mount redirection
 			// syscall8 -> syscall35 conversion starts here
@@ -100,7 +99,6 @@ uint32_t syscall35(const char *old_path, const char *new_path) {
 			// syscall8 -> syscall35 conversion ends here
 			return 0;
 		}
-	*/
 	} else {
 	if(mnt("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
 		system_call_2(35, (uint32_t) old_path, (uint32_t) new_path);

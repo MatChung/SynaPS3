@@ -72,41 +72,11 @@ unsigned char GetPayloadCaps() {
     return ret;
 }
 
-uint32_t syscall35hermes(const char *old_path, const char *new_path) {
-	if(sys8_enable(0) > 0) {
-		// This needs to be fixed asap to allow more than one mount redirection
-		// syscall8 -> syscall35 conversion starts here
-		typedef struct
-		{
-			path_open_entry entries[2];
-			char arena[0x2000];
-		} path_open_table;
-		path_open_table open_table;
-		uint64_t dest_table_addr;	
-		sys8_path_table(0ULL);
-		dest_table_addr= 0x80000000007FF000ULL-((sizeof(path_open_table)+15) & ~15);
-		open_table.entries[0].compare_addr= ((uint64_t) &open_table.arena[0]) - ((uint64_t) &open_table) + dest_table_addr;
-		open_table.entries[0].replace_addr= ((uint64_t) &open_table.arena[0x800])- ((uint64_t) &open_table) + dest_table_addr;
-		open_table.entries[1].compare_addr= 0ULL;
-		cellFsMkdir(new_path, CELL_FS_DEFAULT_CREATE_MODE_1);
-		cellFsChmod(new_path, 0777);      
-		strncpy(&open_table.arena[0], old_path, 0x100);
-		strncpy(&open_table.arena[0x800], new_path, 0x800);
-		open_table.entries[0].compare_len= strlen(&open_table.arena[0]);
-		open_table.entries[0].replace_len= strlen(&open_table.arena[0x800]);
-		sys8_memcpy(dest_table_addr, (uint64_t) &open_table, sizeof(path_open_table));
-		sys8_path_table( dest_table_addr);
-		// syscall8 -> syscall35 conversion ends here
+int MountFlash(char* fla) {
+    struct stat stPath;
+    if(stat(fla, &stPath) == 0) {
+		Mount(fla, "/dev_flash/");
 		return 0;
-	}
-}
-
-uint32_t MountDev(char *old_path_dev, char *new_path_dev) {
-	if(GetPayloadCaps() && PAYLOAD_CAPS_SYSCALL36) {
-		syscall35hermes(old_path_dev, new_path_dev);
-	}
-	if(GetPayloadCaps() && PAYLOAD_CAPS_SYSCALL35) {
-		Mount(old_path_dev, new_path_dev);
 	}
 }
 

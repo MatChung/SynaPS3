@@ -54,7 +54,7 @@ void Exit() {
 	sys_process_exit(1); 
 }
 
-char* Versiontxt(char * FirmwareVersion) {
+char* Versiontxt() {
   FILE *fp = fopen ("/dev_flash/vsh/etc/version.txt", "r" );  
   if ( fp != NULL )
   {	
@@ -64,6 +64,7 @@ char* Versiontxt(char * FirmwareVersion) {
       return FirmwareVersion;
     } 
   } 
+  return 0;
 }
 
 int LV2_FW() {
@@ -104,9 +105,10 @@ uint32_t Mount(char *old_path, char *new_path) {
 			sys8_memcpy(dest_table_addr, (uint64_t) &open_table, sizeof(path_open_table));
 			sys8_path_table( dest_table_addr);
 			// syscall8 -> syscall35 conversion ends here
-			return 0x00001000;		// Return 8
+			return 8;
 		}
 	}
+	return 0;
 }
 
 void LoadIOFSModules() {

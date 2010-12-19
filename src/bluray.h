@@ -32,7 +32,7 @@ void MountBluray(char *game_path) {
 			syscall36(game_path);
 		}
 	} else {				
-		Mount("/app_home", game_path);
+		Mount((char *)"/app_home", game_path);
 	}
 }
 

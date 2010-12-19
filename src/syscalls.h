@@ -75,6 +75,8 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
+uint64_t out; 
+	
 typedef struct
 {
 	uint64_t compare_addr; // kernel address to compare string
@@ -173,7 +175,6 @@ uint64_t sys8_path_table(uint64_t addr_table) {
 }
 
 uint64_t syscall6(uint64_t addr) { 
-	uint64_t out; 
 	system_call_2(6, addr, out);
 	return out; 
 } 
@@ -185,10 +186,12 @@ void syscall7(uint64_t addr, uint64_t val) {
 uint32_t syscall35(const char *old_path, const char *new_path) {			
 	system_call_2(35, (uint32_t) old_path, (uint32_t) new_path);	
 	return_to_user_prog(uint32_t);
+	return 35;
 }
 
-uint32_t syscall36(char *game_path) {						
-		system_call_1(36, (uint32_t) game_path);
+int syscall36(char *game_path) {						
+	system_call_1(36, (uint32_t) game_path);
+	return 36;
 }
 
 #endif /* __SYSCALLS_H */

@@ -57,15 +57,4 @@ int MountFlash(char* fla) {
 	}
 }
 
-// LV2_FLASH - Unlock/Lock dev_flash0 for writing.
-void LV2_FLASH(bool WrFlash) {
-	if (strcmp(FirmwareVersion, "03.4100")==0){
-		if (WrFlash) {
-		
-		} else {
-			
-		}
-	}
-}
-
 #endif /* __FLASH_H */

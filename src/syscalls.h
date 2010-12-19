@@ -188,7 +188,7 @@ uint32_t syscall35(const char *old_path, const char *new_path) {
 	return_to_user_prog(uint32_t);
 }
 
-uint32_t syscall36(char *game_path) {											
+uint32_t syscall36(char *game_path) {						
 		system_call_1(36, (uint32_t) game_path);
 }
 

@@ -7,7 +7,7 @@
 <body>
 <h1 id='SynaPS3'><img src="logo/synaPS3_trans.png"></h1>
 <font face='helvetica'>
-<h3><b>To get started with SynaPS3, all you have to do is add "synaPS3.h" to your includes.</b></h3>
+<h3><b>To get started with SynaPS3, add the desired files to your includes.</b></h3>
 <p>This library has been made by a pair not seeking fame, profit or benefit.</p>
 
 <p>I don&#8217;t want to cause any damage to the video game industry, but it is not reasonable that these consoles (that are expensive) are constructed like a faraday cage and we can not do anything to preserve the health of the lens of our readers, while Sony is burning holes through our pockets when you send a console for repair and they are dedicated to eliminating original features of the console, such as PS3 Other OS and Linux, relying on what they think best for your business and not caring for the feelings of their users or their acquired rights as users and owners of their consoles.</p>
@@ -26,7 +26,7 @@
 </li>
 
 <li>
-<p>Universal Payload support, even though some deprecated payloads may not be able to carry out all of SynaPS3's intended features.<br><i>The most supported payloads are Hermes v3, Hermes v4, and PL3Dev.<br>All of SynaPS3's current features can only be fully implemented on these payloads .</i></p>
+<p>Universal Payload support, even though some deprecated payloads may not be able to carry out all of SynaPS3's intended features.<br><i>The most supported payload is PL3Dev.<br>All of SynaPS3's current features can only be fully implemented on this payload.</i></p>
 </li>
 
 <li>
@@ -42,121 +42,17 @@
 </li>
 
 <li>
-<p>syscall35 for Hermes v3 & Hermes v4 payloads.</p>
+<p>Partial syscall35 for Hermes v3 & Hermes v4 payloads.</p>
 </li>
 </ul>
 
-<h2 id='features'>FUNCTIONS</h2>
-
-<p>Below are documentations on the functions included in the library:</p>
-
-<ul>
-
-<li>
-<b>uint32_t syscall35(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u>PL3, PL3Dev<br><font color="red"><b>Please use Mount instead of syscall35. This is only included to increase compatability with existing homebrew.</b></font><br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
-<p>Mounts the second argument given to the first argument given. <i>This will return FAKE if ran on Hermes v3/Hermes v4.</i></p>
-<pre>
-<i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>
-</li>
-
-<li>
-<b>void syscall36(char *game_path)</b><br><u>Supported payloads:</u> All<br><font color="red"><b>Please use MountBDVD instead of syscall36. This is only included to increase compatability with existing homebrew.</b></font>
-<p>Mounts the argument given to the Bluray drive and /app_home. <i>This will return FAKE if ran on PL3 or PL3Dev.</i></p>
-<pre>
-<i>char game_path[] = '/dev_hdd0/GAMES/BLUS00000';<br>Mount(game_path);</i></pre>
-</li>
-
-<li>
-<b>void pokeq(uint64_t addr, uint64_t val)</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3, PL3Dev
-<p>Modifies first argument address in memory to second argument's value.</p>
-<pre>
-<i>pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);</i></pre>
-</li>
-
-<li>
-<b>uint64_t peekq(uint64_t addr)</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3, PL3Dev
-<p>Returns the value at first argument address.</p>
-<pre>
-<i>peekq(0xE92296887C0802A6ULL);</i></pre>
-</li>
-
-<li>
-<b>int ReadFirmwareVersion(char * FirmwareVersion)</b><br><u>Supported payloads:</u> All
-<p>Writes firmware version in the form of '00.0000' to FirmwareVersion.</p>
-<pre>
-<i>ReadFirmwareVersion(FirmwareVersion)<br>if (strcmp(FirmwareVersion, "03.0100")==0){<br>	pokeq(0x800000000004ca38ULL, 0x4BFFFFD440990024ULL);<br>	pokeq(0x80000000000547fcULL, 0x6000000038de0007ULL);<br>	pokeq(0x800000000005487cULL, 0x480000a02f840004ULL);<br>}</i></pre>
-</li>
-
-<li>
-<b>void Firmware342Fix()</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3Dev
-<p>Returns the value at first argument address.</p>
-<pre>
-<i>Firmware342Fix();</i></pre>
-</li>
-
-<li>
-<b>bool IsBlurayGame()</b><br><u>Supported payloads:</u> All
-<p>Returns true is a valid PS3 game is inserted.</p>
-<pre>
-<i>if(!IsBlurayGame())<br>	sys_process_exit(1);</i></pre>
-</li>
-
-<li>
-<b>void BootGame(char eboot_path[256], bool highPriority, const char *stack)</b><br><u>Supported payloads:</u> All
-<p>Boots the first argument, with priority given by second (true = 1001, false = 3071), with stack size given by third argument.</p>
-<pre>
-<i>char eboot_path[256]; <br>sprintf(eboot_path, '%s/PS3_GAME/USRDIR/EBOOT.BIN', game_path);<br>BootGame(eboot_path, 1, STACK_1M);</i></pre>
-</li>
-
-<li>
-<b>void FixController()</b><br><u>Supported payloads:</u> PSGroove1.1/Hermes v1/Hermes v2, Hermes v3/Hermes v4, PL3Dev<br><font color="orange"><b>NOTE: PSGroove1.1/Hermesv1/Hermesv2 and PL3Dev Payloads only support this on 3.41.</b></font>
-<p>Activates the controller fix. Limited to 3.41. Remember that PL3/PL3Dev autopatches this.</p>
-<pre>
-<i>FixController();</i></pre>
-</li>
-
-<li>
-<b>uint32_t Mount(const char *old_path, const char *new_path)</b><br><u>Supported payloads:</u> PL3, PL3Dev<br><font color="orange"><b>NOTE: Hermesv3/Hermesv4 Payloads can only mount 1 directory at a time.</b></font>
-<p>Mounts the second argument given to the first argument given. <i>This will return FAKE if ran on Hermes v3/Hermes v4.</i></p>
-<pre>
-<i>char dev_path[] = '/dev_hdd0/CFW/dev_flash';<br>Mount('/dev_flash', dev_path);</i></pre>
-</li>
-
-<li>
-<b>void MountBDVD(char *game_path)</b><br><u>Supported payloads:</u> All
-<p>Mounts the argument given to the Bluray drive and /app_home.</p>
-<pre>
-<i>char game_path[] = '/dev_hdd0/GAMES/BLUS00000';<br>Mount(game_path);</i></pre>
-</li>
-
-<li>
-<b>void LoadIOFSModules()</b><br><u>Supported payloads:</u> All
-<p>Loads the IO and FS modules</p>
-<pre>
-<i>LoadIOFSModules();</i></pre>
-</li>
-
-<li>
-<b>void UnloadIOFSModules()</b><br><u>Supported payloads:</u> All
-<p>Unloads the IO and FS modules</p>
-<pre>
-<i>UnloadIOFSModules();</i></pre>
-</li>
-
-<li>
-<b>void Exit()</b><br><u>Supported payloads:</u> All
-<p>Exit the program.</p>
-<pre>
-<i>Exit();</i></pre>
-</li>
-
-</ul>
+<p>Functions are described and documented in each of the library source files.</p>
 
 <p><b>NOTE:</b> SynaPS3 works with PSGroove 1.0, PSGroove 1.1, Hermes v1, Hermes v2, Hermes v3, Hermes v4, PL3, PL3dev. Of all these, PSGroove 1.0 has the least features and PL3dev has the most features. Please be aware of the differences when creating your program.</p>
 
-<p><b>You can modify the program as you want, but please, make public the source code</b></p>
+<p><b>You can modify the library any way you want, but please, make public the source code.</b></p>
 
-<p><strong>Source Code</strong>: https://subversion.assembla.com/svn/SynaPS3lib/</p>
+<p><strong>Source Code</strong>: https://github.com/n4ru/SynaPS3/</p>
 
 <p>This work is licensed under a <a href='http://www.gnu.org/licenses/gpl.html'>GNU General Public License v3.0</a>.</p>
 </font>

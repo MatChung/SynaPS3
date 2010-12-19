@@ -15,17 +15,20 @@
 
 bool IsBluray() {
     struct stat stPath;
-    return (stat("/dev_bdvd/PS3_GAME/", &stFile) == 0)||(stat("/dev_bdvd/BDMV/", &stFile) == 0);
+    return (stat("/dev_bdvd/PS3_GAME/", &stPath) == 0)||(stat("/dev_bdvd/BDMV/", &stPath) == 0);
 } 
 
 bool IsPS3Game() {
     struct stat stPath;
-    return (stat("/dev_bdvd/PS3_GAME/", &stFile) == 0);
+    return (stat("/dev_bdvd/PS3_GAME/", &stPath) == 0);
 } 
 
 void MountBluray(char *game_path) {
+    struct stat stPath;
 	if(stat(game_path, &stPath) == 0) {					
-		if(old_path == "/dev_bdvd") {					
+		if(syscall35("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
+			syscall35("/dev_bdvd", game_path);
+		} else {
 			syscall36(game_path);
 		}
 	} else {				

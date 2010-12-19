@@ -70,7 +70,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sysutil/sysutil_oskdialog.h> 
 #include <iostream>
 #include <fstream>
-#include "syscall8.h" 
 
 #ifdef __cplusplus
 extern "C" {

@@ -54,7 +54,7 @@ void Exit() {
 	sys_process_exit(1); 
 }
 
-int Versiontxt(char * FirmwareVersion) {
+char* Versiontxt(char * FirmwareVersion) {
   FILE *fp = fopen ("/dev_flash/vsh/etc/version.txt", "r" );  
   if ( fp != NULL )
   {	
@@ -62,16 +62,12 @@ int Versiontxt(char * FirmwareVersion) {
     if (fgets ( line, sizeof line, fp ) != NULL) {
       sprintf(FirmwareVersion, "%s", strstr(line, "release:")+8);    
       return FirmwareVersion;
-    } else {
-      return -2;
-    }	
-  } else {
-    return -1;
-  }
+    } 
+  } 
 }
 
 int LV2_FW() {
-	return peek(0x80000000002D7580ULL);
+	return syscall6(0x80000000002D7580ULL);
 }
 
 void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackSize) {

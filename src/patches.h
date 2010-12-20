@@ -9,41 +9,7 @@
 #ifndef __PATCHES_H
 #define __PATCHES_H
 
-#include <sys/spu_initialize.h> 
-#include <sys/ppu_thread.h> 
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <stdarg.h> 
-#include <assert.h> 
-#include <string.h> 
-#include <dirent.h> 
-#include <unistd.h> 
-#include <fcntl.h> 
-#include <time.h> 
-#include <math.h> 
-#include <stddef.h> 
-#include <sys/stat.h> 
-#include <sys/process.h> 
-#include <sys/memory.h> 
-#include <sys/timer.h> 
-#include <sys/return_code.h> 
-#include <cell/gcm.h> 
-#include <cell/pad.h> 
-#include <cell/keyboard.h> 
-#include <cell/sysmodule.h> 
-#include <cell/dbgfont.h> 
-#include <cell/codec/pngdec.h> 
-#include <cell/cell_fs.h> 
-#include <sysutil/sysutil_sysparam.h> 
-#include <sysutil/sysutil_discgame.h> 
-#include <sysutil/sysutil_msgdialog.h> 
-#include <sysutil/sysutil_oskdialog.h> 
-#include <iostream>
-#include <fstream>
-#include "syscalls.h" 
 #include "system.h" 
-
-static char FirmwareVersion[10]="00.0000";
 
 void Firmware342Fix()
 {

@@ -9,35 +9,8 @@
 #ifndef __SYSTEM_H
 #define __SYSTEM_H
 
-#include <sys/spu_initialize.h> 
-#include <sys/ppu_thread.h> 
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <stdarg.h> 
-#include <assert.h> 
 #include <string.h> 
-#include <dirent.h> 
-#include <unistd.h> 
-#include <fcntl.h> 
-#include <time.h> 
-#include <math.h> 
-#include <stddef.h> 
-#include <sys/stat.h> 
-#include <sys/process.h> 
-#include <sys/memory.h> 
-#include <sys/timer.h> 
-#include <sys/return_code.h> 
-#include <cell/gcm.h> 
-#include <cell/pad.h> 
-#include <cell/keyboard.h> 
-#include <cell/sysmodule.h> 
-#include <cell/dbgfont.h> 
-#include <cell/codec/pngdec.h> 
 #include <cell/cell_fs.h> 
-#include <sysutil/sysutil_sysparam.h> 
-#include <sysutil/sysutil_discgame.h> 
-#include <sysutil/sysutil_msgdialog.h> 
-#include <sysutil/sysutil_oskdialog.h>
 #include "syscalls.h" 
 
 #define STACK_1M	0x0000000000000070ULL
@@ -64,7 +37,7 @@ char* Versiontxt() {
       return FirmwareVersion;
     } 
   } 
-  return 0;
+  return FirmwareVersion;
 }
 
 int LV2_FW() {
@@ -82,7 +55,7 @@ void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackS
 uint32_t Mount(char *old_path, char *new_path) {
 	if(syscall35("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
 		syscall35(old_path, new_path);
-	} else {		
+	} else {
 		if(sys8_enable(0) > 0) {									
 			typedef struct										
 			{

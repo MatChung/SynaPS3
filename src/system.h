@@ -52,6 +52,14 @@ void BootGame(char eboot_path[256], bool highPriority, unsigned long long stackS
     }
 }
 
+void BootDisc(bool highPriority, unsigned long long stackSize) {
+	if (highPriority) {
+        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 1001, stackSize);
+    } else {
+        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 3071, stackSize);
+    }
+}
+
 uint32_t Mount(char *old_path, char *new_path) {
 	if(syscall35("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
 		syscall35(old_path, new_path);

@@ -1,5 +1,5 @@
 Welcome to SynaPS3. 
-To start using SynaPS3 immediately, include "syscalls.h", "system.h", and other desired includes.
+To start using SynaPS3 immediately, add "system.h", and other desired includes.
 
 Remember that SynaPS3 is still in the early stages, additions should follow soon that will make SynaPS3 a major help to the scene.
 If you think you have a contribution that we could add, or have found a bug, let us know by emailing geokoder@gmail.com.

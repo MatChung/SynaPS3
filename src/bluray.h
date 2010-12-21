@@ -1,8 +1,4 @@
 ///////////////////////////////////////////////
-///					SynaPS3lib 				///
-///	          by n4ru && methionine_		///
-/// 	Compatible with Sony PS3 SDK 3.41	///
-///////////////////////////////////////////////
 ///					bluray.h				///
 ///			Bluray specific functions.		///
 ///////////////////////////////////////////////
@@ -28,6 +24,14 @@ void MountBD(char *game_path) {
 		} else {
 			syscall36(game_path);
 		}
+}
+
+void BootDisc(bool highPriority, unsigned long long stackSize) {
+	if (highPriority) {
+        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 1001, stackSize);
+    } else {
+        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 3071, stackSize);
+    }
 }
 
 #endif /* __BLURAY_H */

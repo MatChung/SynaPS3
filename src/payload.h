@@ -1,8 +1,4 @@
 ///////////////////////////////////////////////
-///				SynaPS3lib 					///
-///	          by n4ru && methionine_		///
-/// 	Compatible with Sony PS3 SDK 3.41	///
-///////////////////////////////////////////////
 ///					payload.h				///
 ///	Functions related to dongle payloads.	///
 ///////////////////////////////////////////////
@@ -37,7 +33,7 @@ unsigned char GetPayloadCaps() {
 			ret |= PAYLOAD_CAPS_PEEKPOKE;
 		}
 	}
-	if(syscall36("/dev_bdvd") != 0x80010003) {
+	if(syscall36((char *) "/dev_bdvd") != (int) 0x80010003) {
 		ret |= PAYLOAD_CAPS_SYSCALL36;
 	}
     return ret;
@@ -64,7 +60,7 @@ unsigned char GetPayloadName() {
 			ret |= PAYLOAD_CAPS_PEEKPOKE;
 		}
 	}
-	if(syscall36("/dev_bdvd") != 0x80010003) {
+	if(syscall36((char *) "/dev_bdvd") != (int) 0x80010003) {
 		ret |= PAYLOAD_CAPS_SYSCALL36;
 	}
     if (ret == 13)

@@ -3,3 +3,12 @@ To start using SynaPS3 immediately, add "system.h", and other desired includes.
 
 Remember that SynaPS3 is still in the early stages, additions should follow soon that will make SynaPS3 a major help to the scene.
 If you think you have a contribution that we could add, or have found a bug, let us know by emailing geokoder@gmail.com.
+
+NOTE: Hermes v3/v4 are currently limited to ONE mount using syscall8. This includes the following functions: 
+- Mount
+- MountHome
+Using any of the above functions will use up the available mount. The next use will overwrite the existing mount.
+
+Payloads without syscall35 or syscall8 have no Mount support. 
+
+For best results please use PL3Dev.

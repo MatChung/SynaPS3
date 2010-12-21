@@ -26,12 +26,8 @@ void MountBD(char *game_path) {
 		}
 }
 
-void BootDisc(bool highPriority, unsigned long long stackSize) {
-	if (highPriority) {
-        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 1001, stackSize);
-    } else {
-        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 3071, stackSize);
-    }
+void BootDisc() {
+        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 1001, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
 }
 
 #endif /* __BLURAY_H */

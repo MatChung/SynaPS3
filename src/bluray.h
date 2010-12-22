@@ -1,4 +1,6 @@
 ///////////////////////////////////////////////
+///			SynaPS3lib 2010 (c) n4ru		///
+///////////////////////////////////////////////
 ///					bluray.h				///
 ///			Bluray specific functions.		///
 ///////////////////////////////////////////////
@@ -27,7 +29,7 @@ void MountBD(char *game_path) {
 }
 
 void BootDisc() {
-        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 1001, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
+        sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 1001, SYS_PROCESS_PRIMARY_STACK_SIZE_1M);
 }
 
 #endif /* __BLURAY_H */

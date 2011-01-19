@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////
-///			SynaPS3lib 2010 (c) n4ru		///
+///			SynaPS3lib 2011 (c) n4ru		///
 ///////////////////////////////////////////////
 ///					bluray.h				///
 ///			Bluray specific functions.		///
@@ -7,7 +7,7 @@
 #ifndef __BLURAY_H
 #define __BLURAY_H
 
-#include "system.h"
+#include <unistd.h> 
 
 bool IsBD() {
     struct stat stPath;
@@ -17,15 +17,6 @@ bool IsBD() {
 bool IsPS3Game() {
     struct stat stPath;
     return (stat("/dev_bdvd/PS3_GAME/", &stPath) == 0);
-} 
-
-void MountBD(char *game_path) {		
-		if(syscall35("/dev_hdd0", "/dev_hdd0") != 0x80010003) {
-			syscall35("/dev_bdvd", game_path);
-			syscall35("/app_home", game_path);
-		} else {
-			syscall36(game_path);
-		}
 }
 
 void BootDisc() {

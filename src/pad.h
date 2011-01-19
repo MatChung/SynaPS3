@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////
-///			SynaPS3lib 2010 (c) n4ru		///
+///			SynaPS3lib 2011 (c) n4ru		///
 ///////////////////////////////////////////////
 ///					pad.h					///
 ///		Controller and gamepad functions.	///
@@ -8,7 +8,6 @@
 #define __PAD_H
 
 #include <cell/pad.h>
-#include "system.h"
 
 #define	BUTTON_SELECT		(1<<0)
 #define	BUTTON_L3			(1<<1)
@@ -31,7 +30,7 @@ static unsigned cmd_pad= 0;
 
 static uint32_t new_pad=0,old_pad=0;
 
-static int pad_read(void) { // Ripped almost directly from main.cpp of OM 1.14.2
+static int pad_read(void) {
 	int ret;
 	uint32_t	padd;
 	CellPadData databuf;
@@ -53,7 +52,7 @@ static int pad_read(void) { // Ripped almost directly from main.cpp of OM 1.14.2
 			old_info = infobuf.info;
 			old_pad=new_pad = 0;
 			return 1;
-		}
+	}
 	ret = cellPadGetData(0, &databuf);
 	if (ret != CELL_PAD_OK) {
 		old_pad=new_pad = 0;

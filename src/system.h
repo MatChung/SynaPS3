@@ -21,31 +21,18 @@
 #define STACK_64K	0x0000000000000020ULL
 #define STACK_32K	0x0000000000000010ULL
 
-static char FirmwareVersion[10]="00.0000";
-
 void exit() {
-	sys_process_exit(1); 
+	sys_process_exit(1);
 }
 
-char* vsnTXT() {
-  FILE *fp = fopen("/dev_flash/vsh/etc/version.txt", "r");  
-  if (fp != NULL) {
-    char line [16];
-    if (fgets(line, sizeof(line), fp) != NULL) {
-      sprintf(FirmwareVersion, "%s", strstr(line, "release:")+8);
-    } 
-  } 
-  return FirmwareVersion;
-}
-
-void bootGame(char eboot_path[256], bool highPriority, unsigned long long stackSize) {
+void bootSELF(char eboot_path[256], bool highPriority, unsigned long long stackSize) {
     if (highPriority)
         sys_game_process_exitspawn2(eboot_path, NULL, NULL, NULL, 0, 1001, stackSize);
     else
         sys_game_process_exitspawn2(eboot_path, NULL, NULL, NULL, 0, 3071, stackSize);
 }
 
-void IOFSMod(bool toggle) {
+void initIOFS(bool toggle) {
 	if(toggle) {
 		cellSysmoduleLoadModule(CELL_SYSMODULE_IO);
 		cellSysmoduleLoadModule(CELL_SYSMODULE_FS);

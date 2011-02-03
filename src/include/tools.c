@@ -392,12 +392,7 @@ static int key_build_path(char *ptr)
 		strncpy(ptr, dir, 256);
 		return 0;
 	}
-
-	home = getenv("HOME");
-	if (home == NULL)
-		return -1;
-
-	snprintf(ptr, 256, "%s/.ps3/", home);
+	snprintf(ptr, 256, "/dev_hdd0/keys", home);
 
 	return 0;
 }

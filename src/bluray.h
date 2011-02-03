@@ -9,17 +9,17 @@
 
 #include <unistd.h> 
 
-bool IsBD() {
+bool isBD() {
     struct stat stPath;
     return (stat("/dev_bdvd/PS3_GAME/", &stPath) == 0)||(stat("/dev_bdvd/BDMV/", &stPath) == 0);
 } 
 
-bool IsPS3Game() {
+bool isPS3Game() {
     struct stat stPath;
     return (stat("/dev_bdvd/PS3_GAME/", &stPath) == 0);
 }
 
-void BootDisc() {
+void bootDisc() {
         sys_game_process_exitspawn2("/dev_bdvd/PS3_GAME/USRDIR/EBOOT.BIN", NULL, NULL, NULL, 0, 1001, SYS_PROCESS_PRIMARY_STACK_SIZE_1M);
 }
 

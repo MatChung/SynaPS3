@@ -15,15 +15,15 @@ char fsExist(char* filename) {
 }
 
 bool fsMkdir(char* newDir) {
-	if(fsStat(newDir)) {
-		return 1;
-	} else {
+	if(!fsStat(newDir)) {
 		cellFsMkdir(newDir, CELL_FS_DEFAULT_CREATE_MODE_1);
 		return fsStat(newDir);
+	} else {
+		return 1;
 	}
 }
 
-bool fsRename(char* from, char* to) {
+bool fsRen(char* from, char* to) {
 	if(!fsStat(to) && fsStat(from)) {
 		cellFsRename(from, to);
 		return fsStat(to);
@@ -36,6 +36,15 @@ bool fsMove(char* from, char* to) {
 	if(!fsStat(to) && fsStat(from)) {
 		// Move code here
 		return fsStat(to);
+	} else {
+		return 1;
+	}
+}
+
+bool fsDel(char* file) {
+	if(!fsStat(file)) {
+		// Delete code here
+		return fsStat(file);
 	} else {
 		return 1;
 	}

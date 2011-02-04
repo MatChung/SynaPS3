@@ -10,6 +10,13 @@
 #include <cell/dbgfont.h> 
 #include <cell/codec/pngdec.h> 
 
+#define PAYLOAD_CAPS_SYSCALL36	1
+#define PAYLOAD_CAPS_SYSCALL8	2
+#define PAYLOAD_CAPS_PEEKPOKE	4
+#define PAYLOAD_CAPS_SYSCALL35	8
+
+static char FirmwareVersion[10]="00.0000";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
